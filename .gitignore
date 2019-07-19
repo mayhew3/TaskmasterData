@@ -1,0 +1,11 @@
+.idea/
+out/
+lib/
+logs/
+sh.exe.stackdump
+scripts/media-mogul-data CMD.lnk
+logging.properties
+.gradle/
+build/
+classes/
+!/.idea/workspace.xml
