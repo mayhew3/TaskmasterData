@@ -89,7 +89,7 @@ public class DataRestoreExecutor {
     // If no appName, do local restore. Otherwise restore to app.
     if ("local".equalsIgnoreCase(env)) {
       logger.info("Restoring to local DB.");
-      restoreToLocal(latestBackup, "tv");
+      restoreToLocal(latestBackup, "taskmaster");
     } else {
       if (optionalAppName.isPresent()) {
         String appName = optionalAppName.get();
