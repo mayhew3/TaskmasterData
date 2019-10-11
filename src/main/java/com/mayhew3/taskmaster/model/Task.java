@@ -2,7 +2,7 @@ package com.mayhew3.taskmaster.model;
 
 import com.mayhew3.postgresobject.dataobject.*;
 
-public class Task extends DataObject {
+public class Task extends RetireableDataObject {
 
   public FieldValueForeignKey person_id = registerForeignKey(new Person(), Nullability.NOT_NULL);
 
