@@ -10,6 +10,7 @@ public class Sprint extends RetireableDataObject {
     registerForeignKey(new Person(), Nullability.NOT_NULL);
     registerTimestampField("start_date", Nullability.NOT_NULL);
     registerTimestampField("end_date", Nullability.NOT_NULL);
+    registerTimestampField("close_date", Nullability.NULLABLE);
   }
 
   @Override
