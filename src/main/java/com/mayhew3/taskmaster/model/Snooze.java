@@ -11,7 +11,7 @@ public class Snooze extends RetireableDataObject {
     registerIntegerField("snooze_number", Nullability.NOT_NULL);
     registerStringField("snooze_units", Nullability.NOT_NULL);
     registerStringField("snooze_anchor", Nullability.NOT_NULL);
-    registerTimestampField("previous_anchor", Nullability.NOT_NULL);
+    registerTimestampField("previous_anchor", Nullability.NULLABLE);
     registerTimestampField("new_anchor", Nullability.NOT_NULL);
   }
 
