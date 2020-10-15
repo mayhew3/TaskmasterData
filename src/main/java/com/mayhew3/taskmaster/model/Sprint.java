@@ -11,6 +11,8 @@ public class Sprint extends RetireableDataObject {
     registerTimestampField("start_date", Nullability.NOT_NULL);
     registerTimestampField("end_date", Nullability.NOT_NULL);
     registerTimestampField("close_date", Nullability.NULLABLE);
+    registerIntegerField("num_units", Nullability.NOT_NULL);
+    registerStringField("unit_name", Nullability.NOT_NULL);
   }
 
   @Override
