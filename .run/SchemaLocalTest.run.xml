@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SchemaLocalTest" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+    <module name="taskmaster-data.test" />
+    <useClassPathOnly />
+    <option name="PACKAGE_NAME" value="" />
+    <option name="MAIN_CLASS_NAME" value="SchemaLocalTest" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <option name="PARAMETERS" value="" />
+    <envs>
+      <env name="postgresURL_local_taskmaster" value="jdbc:postgresql://localhost:5434/taskmaster?user=postgres&amp;password=m3mysql" />
+      <env name="DATABASE_URL" value="postgres://wugciyaeenthqi:46c166b282780725db67173e5a161641dd21010c6f3f626d1ca1cc90a31e3787@ec2-50-16-197-244.compute-1.amazonaws.com:5432/d33sn9lh4rvc9j" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
