@@ -5,6 +5,7 @@ import com.mayhew3.taskmaster.model.*;
 
 public class TaskMasterSchema {
   public static DataSchema schema = new DataSchema(
+      new OmniFocus(),
       new Person(),
       new Snooze(),
       new Sprint(),
