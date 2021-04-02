@@ -1,74 +1,85 @@
 package com.mayhew3.taskmaster;
 
-import com.google.common.collect.Lists;
 import com.mayhew3.postgresobject.ArgumentChecker;
-import com.mayhew3.postgresobject.EnvironmentChecker;
-import com.mayhew3.postgresobject.db.DataRestoreExecutor;
-import com.mayhew3.postgresobject.db.DataRestoreLocalExecutor;
-import com.mayhew3.postgresobject.db.DataRestoreRemoteExecutor;
+import com.mayhew3.postgresobject.db.*;
 import com.mayhew3.postgresobject.exception.MissingEnvException;
+import com.mayhew3.taskmaster.db.DatabaseEnvironments;
+import com.mayhew3.taskmaster.db.HerokuDatabaseEnvironment;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 
 public class TaskMasterRestoreExecutor {
 
-  private static String restoreEnv;
+  private static final DateTime backupDate = new DateTime(2021, 3, 8, 20, 45, 0);
+
+  private final DatabaseEnvironment backupEnvironment;
+  private final DatabaseEnvironment restoreEnvironment;
+  private final boolean oldBackup;
+
+  public TaskMasterRestoreExecutor(DatabaseEnvironment backupEnvironment, DatabaseEnvironment restoreEnvironment, boolean oldBackup) {
+    this.backupEnvironment = backupEnvironment;
+    this.restoreEnvironment = restoreEnvironment;
+    this.oldBackup = oldBackup;
+  }
 
   public static void main(String... args) throws MissingEnvException, InterruptedException, IOException {
 
-    com.mayhew3.postgresobject.ArgumentChecker argumentChecker = new ArgumentChecker(args);
+    ArgumentChecker argumentChecker = new ArgumentChecker(args);
     argumentChecker.removeExpectedOption("db");
     argumentChecker.addExpectedOption("backupEnv", true, "Name of environment to backup (local, heroku, heroku-staging)");
     argumentChecker.addExpectedOption("restoreEnv", true, "Name of environment to restore (local, heroku, heroku-staging)");
 
     String backupEnv = argumentChecker.getRequiredValue("backupEnv");
-    restoreEnv = argumentChecker.getRequiredValue("restoreEnv");
+    String restoreEnv = argumentChecker.getRequiredValue("restoreEnv");
 
-    if (isLocal()) {
-      String localDBName = getLocalDBNameFromEnv(restoreEnv);
-      DataRestoreExecutor dataRestoreExecutor = new DataRestoreLocalExecutor(
-          restoreEnv,
-          backupEnv,
-          11,
-          "TaskMaster",
-          localDBName);
-      dataRestoreExecutor.runUpdate();
+    boolean oldBackup = Boolean.parseBoolean(argumentChecker.getRequiredValue("oldBackup"));
+
+    DatabaseEnvironment backupEnvironment = DatabaseEnvironments.environments.get(backupEnv);
+    DatabaseEnvironment restoreEnvironment = DatabaseEnvironments.environments.get(restoreEnv);
+
+    if (backupEnvironment == null) {
+      throw new IllegalArgumentException("Invalid backupEnv: " + backupEnv);
+    }
+    if (restoreEnvironment == null) {
+      throw new IllegalArgumentException("Invalid restoreEnv: " + restoreEnv);
+    }
+
+    TaskMasterRestoreExecutor taskMasterRestoreExecutor = new TaskMasterRestoreExecutor(backupEnvironment, restoreEnvironment, oldBackup);
+    taskMasterRestoreExecutor.runUpdate();
+  }
+
+  public void runUpdate() throws InterruptedException, IOException, com.mayhew3.postgresobject.exception.MissingEnvException {
+    if (restoreEnvironment.isLocal()) {
+      updateLocal();
     } else {
-      String appNameFromEnv = getAppNameFromEnv(restoreEnv);
-      String databaseUrl = EnvironmentChecker.getOrThrow("DATABASE_URL");
-      DataRestoreExecutor dataRestoreExecutor = new DataRestoreRemoteExecutor(
-          restoreEnv,
-          backupEnv,
-          11,
-          "TaskMaster",
-          appNameFromEnv,
-          databaseUrl);
-      dataRestoreExecutor.runUpdate();
+      updateRemote();
     }
   }
 
-  private static boolean isLocal() {
-    return Lists.newArrayList("local", "e2e").contains(restoreEnv);
+  private void updateLocal() throws MissingEnvException, InterruptedException, IOException {
+    LocalDatabaseEnvironment localRestoreEnvironment = (LocalDatabaseEnvironment) restoreEnvironment;
+
+    DataRestoreExecutor dataRestoreExecutor;
+    if (oldBackup) {
+      dataRestoreExecutor = new DataRestoreLocalExecutor(localRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel, backupDate);
+    } else {
+      dataRestoreExecutor = new DataRestoreLocalExecutor(localRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel);
+    }
+    dataRestoreExecutor.runUpdate();
+
   }
 
-  private static String getLocalDBNameFromEnv(String backupEnv) {
-    if ("local".equalsIgnoreCase(backupEnv)) {
-      return "taskmaster";
-    } else if ("e2e".equalsIgnoreCase(backupEnv)) {
-      return "taskmaster_e2e";
-    } else {
-      return null;
-    }
-  }
+  private void updateRemote() throws MissingEnvException, IOException, InterruptedException {
+    HerokuDatabaseEnvironment herokuRestoreEnvironment = (HerokuDatabaseEnvironment) restoreEnvironment;
 
-  private static String getAppNameFromEnv(String backupEnv) {
-    if ("heroku".equalsIgnoreCase(backupEnv)) {
-      return "taskmaster-general";
-    } else if ("heroku-staging".equalsIgnoreCase(backupEnv)) {
-      return "taskmaster-staging";
+    DataRestoreExecutor dataRestoreExecutor;
+    if (oldBackup) {
+      dataRestoreExecutor = new DataRestoreRemoteExecutor(herokuRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel, backupDate);
     } else {
-      return null;
+      dataRestoreExecutor = new DataRestoreRemoteExecutor(herokuRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel);
     }
+    dataRestoreExecutor.runUpdate();
   }
 
 }

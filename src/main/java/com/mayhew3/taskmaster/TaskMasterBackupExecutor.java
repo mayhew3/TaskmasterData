@@ -1,18 +1,16 @@
 package com.mayhew3.taskmaster;
 
-import com.google.common.collect.Lists;
 import com.mayhew3.postgresobject.ArgumentChecker;
-import com.mayhew3.postgresobject.EnvironmentChecker;
-import com.mayhew3.postgresobject.db.DataBackupExecutor;
-import com.mayhew3.postgresobject.db.DataBackupLocalExecutor;
-import com.mayhew3.postgresobject.db.DataBackupRemoteExecutor;
+import com.mayhew3.postgresobject.db.*;
 import com.mayhew3.postgresobject.exception.MissingEnvException;
+import com.mayhew3.taskmaster.db.DatabaseEnvironments;
+import com.mayhew3.taskmaster.db.HerokuDatabaseEnvironment;
 
 import java.io.IOException;
 
 public class TaskMasterBackupExecutor {
-  private static String backupEnv;
 
+  private final DatabaseEnvironment databaseEnvironment;
 
   public static void main(String[] args) throws MissingEnvException, InterruptedException, IOException {
 
@@ -20,40 +18,36 @@ public class TaskMasterBackupExecutor {
     argumentChecker.removeExpectedOption("db");
     argumentChecker.addExpectedOption("backupEnv", true, "Name of environment to backup (local, heroku, heroku-staging)");
 
-    backupEnv = argumentChecker.getRequiredValue("backupEnv");
+    String backupEnv = argumentChecker.getRequiredValue("backupEnv");
+    DatabaseEnvironment databaseEnvironment = DatabaseEnvironments.environments.get(backupEnv);
 
-    if (isLocal()) {
-      String localDBName = getLocalDBNameFromEnv(backupEnv);
+    TaskMasterBackupExecutor taskMasterBackupExecutor = new TaskMasterBackupExecutor(databaseEnvironment);
+    taskMasterBackupExecutor.runUpdate();
+  }
 
-      DataBackupExecutor executor = new DataBackupLocalExecutor(
-          backupEnv,
-          11,
-          "TaskMaster",
-          localDBName);
-      executor.runUpdate();
+  public TaskMasterBackupExecutor(DatabaseEnvironment databaseEnvironment) {
+    this.databaseEnvironment = databaseEnvironment;
+  }
+
+  public void runUpdate() throws MissingEnvException, InterruptedException, IOException {
+    if (databaseEnvironment.isLocal()) {
+      updateLocal();
     } else {
-      String databaseUrl = EnvironmentChecker.getOrThrow("DATABASE_URL");
-      DataBackupExecutor executor = new DataBackupRemoteExecutor(
-          backupEnv,
-          11,
-          "TaskMaster",
-          databaseUrl);
-      executor.runUpdate();
+      updateRemote();
     }
   }
 
-  private static boolean isLocal() {
-    return Lists.newArrayList("local", "e2e").contains(backupEnv);
+  private void updateLocal() throws MissingEnvException, InterruptedException, IOException {
+    LocalDatabaseEnvironment localDatabaseEnvironment = (LocalDatabaseEnvironment) databaseEnvironment;
+
+    DataBackupExecutor executor = new DataBackupLocalExecutor(localDatabaseEnvironment, GlobalConstants.appLabel);
+    executor.runUpdate();
   }
 
-  private static String getLocalDBNameFromEnv(String backupEnv) {
-    if ("local".equalsIgnoreCase(backupEnv)) {
-      return "taskmaster";
-    } else if ("e2e".equalsIgnoreCase(backupEnv)) {
-      return "taskmaster_e2e";
-    } else {
-      return null;
-    }
-  }
+  private void updateRemote() throws MissingEnvException, IOException, InterruptedException {
+    HerokuDatabaseEnvironment herokuDatabaseEnvironment = (HerokuDatabaseEnvironment) databaseEnvironment;
 
+    DataBackupExecutor executor = new DataBackupRemoteExecutor(herokuDatabaseEnvironment, GlobalConstants.appLabel);
+    executor.runUpdate();
+  }
 }

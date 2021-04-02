@@ -1,8 +1,11 @@
 package com.mayhew3.taskmaster;
 
+import com.mayhew3.postgresobject.ArgumentChecker;
+import com.mayhew3.postgresobject.EnvironmentChecker;
+import com.mayhew3.postgresobject.db.DatabaseEnvironment;
 import com.mayhew3.postgresobject.db.PostgresConnectionFactory;
 import com.mayhew3.postgresobject.db.SQLConnection;
-import com.mayhew3.taskmaster.exception.MissingEnvException;
+import com.mayhew3.taskmaster.db.DatabaseEnvironments;
 import com.mayhew3.taskmaster.model.OmniFocus;
 import com.mayhew3.taskmaster.model.Task;
 
@@ -16,9 +19,10 @@ public class OmniFocusImporter {
 
   private static SQLConnection connection;
 
-  public static void main(String... args) throws MissingEnvException, URISyntaxException, SQLException {
-    String databaseUrl = EnvironmentChecker.getOrThrow("DATABASE_URL");
-    connection = PostgresConnectionFactory.initiateDBConnect(databaseUrl);
+  public static void main(String... args) throws URISyntaxException, SQLException, com.mayhew3.postgresobject.exception.MissingEnvException {
+    ArgumentChecker argumentChecker = new ArgumentChecker(args);
+    DatabaseEnvironment environment = DatabaseEnvironments.getEnvironmentForDBArgument(argumentChecker);
+    connection = PostgresConnectionFactory.createConnection(environment);
 
     String sql = "SELECT * " +
         "FROM omnifocus " +

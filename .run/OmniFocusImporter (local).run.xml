@@ -1,10 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="OmniFocusImporter (local)" type="Application" factoryName="Application">
-    <envs>
-      <env name="DATABASE_URL" value="jdbc:postgresql://localhost:5434/taskmaster?user=postgres&amp;password=m3mysql" />
-    </envs>
     <option name="MAIN_CLASS_NAME" value="com.mayhew3.taskmaster.OmniFocusImporter" />
     <module name="taskmaster-data.main" />
+    <option name="PROGRAM_PARAMETERS" value="-db local" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>
