@@ -29,6 +29,7 @@ public class Task extends RetireableDataObject {
   public FieldValueBoolean recurWait = registerBooleanField("recur_wait", Nullability.NULLABLE);
 
   public FieldValueInteger recurrence_id = registerIntegerField("recurrence_id", Nullability.NULLABLE);
+  public FieldValueInteger recur_iteration = registerIntegerField("recur_iteration", Nullability.NULLABLE);
 
   @Override
   public String getTableName() {
