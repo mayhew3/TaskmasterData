@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d (%p) [%c{1}] %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.mayhew3.taskmaster" level="DEBUG" />
+        <Root level="INFO">
+            <AppenderRef ref="ConsoleAppender"/>
+        </Root>
+    </Loggers>
+</Configuration>

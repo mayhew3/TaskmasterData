@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="TaskMasterRestoreExecutor (local from heroku)" type="Application" factoryName="Application">
+  <configuration default="false" name="TaskMasterRestoreExecutor (heroku from heroku)" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.mayhew3.taskmaster.TaskMasterRestoreExecutor" />
     <module name="taskmaster-data.main" />
-    <option name="PROGRAM_PARAMETERS" value="-backupEnv heroku -restoreEnv local -oldBackup false" />
+    <option name="PROGRAM_PARAMETERS" value="-backupEnv heroku -restoreEnv heroku -oldBackup false" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

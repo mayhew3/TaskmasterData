@@ -29,6 +29,7 @@ public class TaskMasterRestoreExecutor {
     argumentChecker.removeExpectedOption("db");
     argumentChecker.addExpectedOption("backupEnv", true, "Name of environment to backup (local, heroku, heroku-staging)");
     argumentChecker.addExpectedOption("restoreEnv", true, "Name of environment to restore (local, heroku, heroku-staging)");
+    argumentChecker.addExpectedOption("oldBackup", true, "Whether to restore an old backup");
 
     String backupEnv = argumentChecker.getRequiredValue("backupEnv");
     String restoreEnv = argumentChecker.getRequiredValue("restoreEnv");
