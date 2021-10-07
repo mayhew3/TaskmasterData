@@ -31,6 +31,12 @@ public class Task extends RetireableDataObject {
   public FieldValueInteger recurrence_id = registerIntegerField("recurrence_id", Nullability.NULLABLE);
   public FieldValueInteger recur_iteration = registerIntegerField("recur_iteration", Nullability.NULLABLE);
 
+  public Task() {
+    super();
+
+    addUniqueConstraint(recurrence_id, recur_iteration, retired);
+  }
+
   @Override
   public String getTableName() {
     return "task";
