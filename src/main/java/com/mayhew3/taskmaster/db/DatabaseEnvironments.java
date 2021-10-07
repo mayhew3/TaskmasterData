@@ -12,7 +12,7 @@ public class DatabaseEnvironments {
 
   static {
     addLocal("local", "taskmaster", 13);
-    addHeroku("heroku", "postgresURL_taskmaster", 11, "taskmaster-general");
+    addHeroku("heroku", "postgresURL_taskmaster", 13, "taskmaster-general");
   }
 
   @SuppressWarnings("SameParameterValue")
