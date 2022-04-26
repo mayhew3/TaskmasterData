@@ -8,6 +8,7 @@ import com.mayhew3.taskmaster.db.HerokuDatabaseEnvironment;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class TaskMasterRestoreExecutor {
 
@@ -23,7 +24,7 @@ public class TaskMasterRestoreExecutor {
     this.oldBackup = oldBackup;
   }
 
-  public static void main(String... args) throws MissingEnvException, InterruptedException, IOException {
+  public static void main(String... args) throws MissingEnvException, InterruptedException, IOException, SQLException {
 
     ArgumentChecker argumentChecker = new ArgumentChecker(args);
     argumentChecker.removeExpectedOption("db");
@@ -50,7 +51,7 @@ public class TaskMasterRestoreExecutor {
     taskMasterRestoreExecutor.runUpdate();
   }
 
-  public void runUpdate() throws InterruptedException, IOException, com.mayhew3.postgresobject.exception.MissingEnvException {
+  public void runUpdate() throws InterruptedException, IOException, com.mayhew3.postgresobject.exception.MissingEnvException, SQLException {
     if (restoreEnvironment.isLocal()) {
       updateLocal();
     } else {
@@ -58,7 +59,7 @@ public class TaskMasterRestoreExecutor {
     }
   }
 
-  private void updateLocal() throws MissingEnvException, InterruptedException, IOException {
+  private void updateLocal() throws MissingEnvException, InterruptedException, IOException, SQLException {
     LocalDatabaseEnvironment localRestoreEnvironment = (LocalDatabaseEnvironment) restoreEnvironment;
 
     DataRestoreExecutor dataRestoreExecutor;
@@ -71,7 +72,7 @@ public class TaskMasterRestoreExecutor {
 
   }
 
-  private void updateRemote() throws MissingEnvException, IOException, InterruptedException {
+  private void updateRemote() throws MissingEnvException, IOException, InterruptedException, SQLException {
     HerokuDatabaseEnvironment herokuRestoreEnvironment = (HerokuDatabaseEnvironment) restoreEnvironment;
 
     DataRestoreExecutor dataRestoreExecutor;
