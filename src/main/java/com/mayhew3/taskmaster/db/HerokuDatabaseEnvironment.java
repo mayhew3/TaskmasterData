@@ -8,8 +8,8 @@ public class HerokuDatabaseEnvironment extends RemoteDatabaseEnvironment {
 
   final String environmentVariableName;
 
-  public HerokuDatabaseEnvironment(String environmentName, String environmentVariableName, Integer pgVersion, String herokuAppName) {
-    super(environmentName, pgVersion, herokuAppName);
+  public HerokuDatabaseEnvironment(String environmentName, String environmentVariableName, String schemaName, Integer pgVersion, String herokuAppName) {
+    super(environmentName, pgVersion, herokuAppName, schemaName);
     this.environmentVariableName = environmentVariableName;
   }
 

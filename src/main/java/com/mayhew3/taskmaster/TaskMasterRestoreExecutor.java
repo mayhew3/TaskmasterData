@@ -77,9 +77,9 @@ public class TaskMasterRestoreExecutor {
 
     DataRestoreExecutor dataRestoreExecutor;
     if (oldBackup) {
-      dataRestoreExecutor = new DataRestoreRemoteExecutor(herokuRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel, backupDate);
+      dataRestoreExecutor = new DataRestoreRemoteSchemaExecutor(herokuRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel, GlobalConstants.schemaName, backupDate);
     } else {
-      dataRestoreExecutor = new DataRestoreRemoteExecutor(herokuRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel);
+      dataRestoreExecutor = new DataRestoreRemoteSchemaExecutor(herokuRestoreEnvironment, backupEnvironment, GlobalConstants.appLabel, GlobalConstants.schemaName);
     }
     dataRestoreExecutor.runUpdate();
   }

@@ -48,7 +48,7 @@ public class TaskMasterBackupExecutor {
   private void updateRemote() throws MissingEnvException, IOException, InterruptedException, SQLException {
     HerokuDatabaseEnvironment herokuDatabaseEnvironment = (HerokuDatabaseEnvironment) databaseEnvironment;
 
-    DataBackupExecutor executor = new DataBackupRemoteExecutor(herokuDatabaseEnvironment, GlobalConstants.appLabel);
+    DataBackupExecutor executor = new DataBackupRemoteSchemaExecutor(herokuDatabaseEnvironment, GlobalConstants.appLabel, GlobalConstants.schemaName);
     executor.runUpdate();
   }
 }
