@@ -1,12 +1,20 @@
 plugins {
-    id 'java'
+    // This plugin allows me to check if there are any updates available for any of the dependencies.
+    // From the root directory, run 'gradle dependencyUpdates'. It won't make changes, but print out the latest versions.
+    id 'com.github.ben-manes.versions' version '0.17.0'
 }
 
-group 'com.mayhew3'
-version '0.1-SNAPSHOT'
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'application'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+group 'com.mayhew3.taskmaster'
+version '0.2'
+
+java {
+    targetCompatibility = JavaVersion.VERSION_16
+    sourceCompatibility = JavaVersion.VERSION_16
+}
 
 repositories {
     mavenCentral()
@@ -14,15 +22,20 @@ repositories {
 }
 
 dependencies {
-    compile 'org.postgresql:postgresql:42.2.19'
-    compile 'com.google.guava:guava:27.0.1-jre'
-    compile 'org.json:json:20180130'
-    compile 'org.apache.commons:commons-lang3:3.8.1'
-    compile group: 'commons-cli', name: 'commons-cli', version: '1.4'
+    implementation 'com.google.guava:guava:27.0.1-jre'
+    implementation 'org.json:json:20180130'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.2'
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
     implementation 'com.github.mayhew3.Postgres-Object:main:0.19.5'
-    compile group: 'org.jetbrains', name: 'annotations', version: '17+'
-    compile 'joda-time:joda-time:2.9.9'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '17+'
+    implementation 'joda-time:joda-time:2.9.9'
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'com.github.mayhew3.Postgres-Object:tests:0.19.5'
+}
+
+task runHerokuBackup(type:JavaExec) {
+    main = 'com.mayhew3.taskmaster.TaskMasterBackupExecutor'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['-backupEnv', 'heroku']
 }
