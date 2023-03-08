@@ -13,6 +13,7 @@ public class DatabaseEnvironments {
 
   static {
     addLocal("local", "projects", GlobalConstants.schemaName, 14);
+    addHeroku("heroku-staging", "postgresURL_staging", GlobalConstants.schemaName, 14, "taskmaster-staging");
     addHeroku("heroku", "postgresURL_heroku", GlobalConstants.schemaName, 14, "taskmaster-general");
   }
 
