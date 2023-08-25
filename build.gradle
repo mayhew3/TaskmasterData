@@ -26,12 +26,12 @@ dependencies {
     implementation 'org.json:json:20180130'
     implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.2'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
-    implementation 'com.github.mayhew3.Postgres-Object:main:0.19.5'
+    implementation 'com.github.mayhew3.Postgres-Object:main:0.19.6'
     implementation group: 'org.jetbrains', name: 'annotations', version: '17+'
     implementation 'joda-time:joda-time:2.9.9'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
-    testImplementation 'com.github.mayhew3.Postgres-Object:tests:0.19.5'
+    testImplementation 'com.github.mayhew3.Postgres-Object:tests:0.19.6'
 }
 
 task runHerokuBackup(type:JavaExec) {
